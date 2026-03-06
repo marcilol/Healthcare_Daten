@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-import sqlite3
+# import sqlite3
 from sklearn.externals import joblib
 
 # Load the pre-trained model
