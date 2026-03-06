@@ -26,11 +26,7 @@ jobs:
     - name: Pull latest changes
       run: git pull origin main  # Ensure latest changes are pulled
 
-    - name: Add model file to Git LFS
-      run: |
-        git add .gitattributes  # Add the .gitattributes file
-        git commit -m "Track model with Git LFS"
-        git push origin main  # Push the changes to the repository
+   
 
     - name: Upload model
       run: |
