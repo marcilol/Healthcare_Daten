@@ -1,0 +1,31 @@
+name: Upload Model to GitHub
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  upload_model:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Git LFS
+      run: |
+        git lfs install
+
+    - name: Add model file to Git LFS
+      run: |
+        git lfs track "*.pkl"
+        git add .gitattributes
+        git commit -m "Track model with Git LFS"
+        git push origin main
+
+    - name: Upload model
+      run: |
+        git add content/readmission_model.pkl
+        git commit -m "Add model file"
+        git push origin main
