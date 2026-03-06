@@ -1,4 +1,4 @@
-name: Upload Model to GitHubb
+name: Upload Model to GitHub
 
 on:
   push:
