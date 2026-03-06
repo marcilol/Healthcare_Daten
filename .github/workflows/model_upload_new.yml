@@ -13,25 +13,22 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-   - name: Set up GitHub token for authentication
-  run: git config --global user.name marcilol && git config --global user.email jaksa.marton@gmail.com
-  
-- name: Push changes
-  run: git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/marcilol/Healthcare_Daten
-
     - name: Set up Git LFS
       run: |
-        git lfs install
+        git lfs install   # Install Git LFS
+        git lfs track "*.pkl"  # Track all .pkl files with Git LFS
+
+    - name: Pull latest changes
+      run: git pull origin main  # Ensure latest changes are pulled
 
     - name: Add model file to Git LFS
       run: |
-        git lfs track "*.pkl"
-        git add .gitattributes
+        git add .gitattributes  # Add the .gitattributes file
         git commit -m "Track model with Git LFS"
-        git push origin main
+        git push origin main  # Push the changes to the repository
 
     - name: Upload model
       run: |
         git add content/readmission_model.pkl
         git commit -m "Add model file"
-        git push origin main
+        git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/marcilol/Healthcare_Daten.git  # Replace with your GitHub repo
