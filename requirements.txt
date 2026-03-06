@@ -4,3 +4,5 @@ scikit-learn==1.1.2
 streamlit==1.12.0
 # sqlite3==3.35.0
 joblib==1.2.0
+setuptools>=65.5.0
+wheel
