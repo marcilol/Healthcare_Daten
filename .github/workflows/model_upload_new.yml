@@ -13,6 +13,11 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
+    - name: Set up Git user
+      run: |
+        git config --global user.email "jaksa.marton@gmail.com"  # Set your email here
+        git config --global user.name "marcilol"  # Set your name here
+
     - name: Set up Git LFS
       run: |
         git lfs install   # Install Git LFS
@@ -29,7 +34,7 @@ jobs:
 
     - name: Upload model
       run: |
-        git add content/readmission_model.pkl
+        git add models/readmission_model.pkl
         git commit -m "Add model file"
         git push https://marcilol:${{ secrets.GITHUB_TOKEN }}@github.com/marcilol/Healthcare_Daten.git
         # Replace USERNAME with your GitHub username and REPO with your repository name
