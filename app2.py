@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import sqlite3
-from sklearn.externals import joblib
+# from sklearn.externals import joblib
 
 # Load the pre-trained model
 model = joblib.load('models/readmission_model.pkl')
