@@ -26,6 +26,6 @@ jobs:
 
     - name: Upload model
       run: |
-        git add models/readmission_model.pkl
+        git add content/readmission_model.pkl
         git commit -m "Add model file"
         git push origin main
