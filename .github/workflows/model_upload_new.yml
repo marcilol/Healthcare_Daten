@@ -13,6 +13,12 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
+   - name: Set up GitHub token for authentication
+  run: git config --global user.name marcilol && git config --global user.email jaksa.marton@gmail.com
+  
+- name: Push changes
+  run: git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/marcilol/Healthcare_Daten
+
     - name: Set up Git LFS
       run: |
         git lfs install
