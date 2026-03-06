@@ -1,7 +1,7 @@
 # pandas==1.5.3
 # numpy==1.24.2
 # scikit-learn==1.1.2
-streamlit==1.12.0
+# streamlit==1.12.0
 # sqlite3==3.35.0
 joblib==1.2.0
 setuptools>=65.5.0
@@ -9,3 +9,4 @@ wheel
 numpy>=1.25
 pandas>=2.1
 scikit-learn>=1.2
+streamlit>=1.22
