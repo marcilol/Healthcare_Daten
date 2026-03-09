@@ -5,7 +5,7 @@ import joblib
 # from sklearn.externals import joblib
 
 # Load the pre-trained model
-# model = joblib.load('/content/readmission_model.pkl')
+model = joblib.load('/content/readmission_model.pkl')
 
 # Set up database connection
 conn = sqlite3.connect('healthcare_data.db')
