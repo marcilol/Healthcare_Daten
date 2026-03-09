@@ -3,7 +3,7 @@
 https://healthcaredaten.streamlit.app/
 
 
-Ein **End-to-End Data Science und Data Engineering Projekt**, das ein
+Ein kleines **End-to-End Data Science und Data Engineering Projekt**, das ein
 Krankenhausnetzwerk simuliert und Analysen zu Patienten,
 Krankenhausaufenthalten und Wiederaufnahmerisiken bereitstellt.
 
@@ -15,22 +15,9 @@ Das Projekt umfasst:
 -   Entwicklung eines interaktiven Analytics Dashboards
 -   Deployment als Web-App
 
-Das Ziel ist es, typische **Healthcare Analytics Workflows** zu
+Das Ziel hiermit ist, typische **Healthcare Analytics Workflows** zu
 demonstrieren, wie sie in Krankenhäusern, Versicherungen oder
-Health-Tech-Unternehmen verwendet werden.
-
-------------------------------------------------------------------------
-
-# 🎯 Projektübersicht
-
-Das System simuliert ein Netzwerk aus Krankenhäusern mit tausenden
-Patienten und Aufenthalten.\
-Auf Basis dieser Daten werden Analysen durchgeführt und ein Modell
-trainiert, das das **30-Tage-Wiederaufnahmerisiko (Hospital Readmission
-Risk)** vorhersagt.
-
-Das interaktive Dashboard ermöglicht es, wichtige Kennzahlen zu
-visualisieren und Patientendaten zu analysieren.
+Health-Tech-Unternehmen verwendet werden könnten.
 
 ------------------------------------------------------------------------
 
@@ -86,8 +73,8 @@ Das Projekt simuliert mehrere miteinander verbundene Datentabellen:
 
 Das Projekt generiert realistisch strukturierte Gesundheitsdaten:
 
--   50.000 Patienten
--   200.000 Krankenhausaufenthalte
+-   5.000 Patienten
+-   20.000 Krankenhausaufenthalte
 -   Laborergebnisse
 -   Medikationsdaten
 -   Diagnosen
@@ -111,8 +98,6 @@ Eine Python-basierte ETL-Pipeline verarbeitet die Daten:
 4.  Speicherung in einer SQLite-Datenbank
 5.  Erstellung eines Analytics-Datensatzes für Machine Learning
 
-Dies simuliert typische **Data Engineering Workflows in Healthcare
-Analytics**.
 
 ------------------------------------------------------------------------
 
@@ -135,6 +120,7 @@ Das Modell nutzt folgende Features:
 
 Das Modell berechnet einen **Readmission Risk Score**, der im Dashboard
 visualisiert wird.
+Die Genauigkeit und Aussagekraft dieses einfachen Modells ist natürlich begrenzt und dient nur der Veranschaulichung.
 
 ------------------------------------------------------------------------
 
@@ -186,7 +172,7 @@ Ein integriertes Machine-Learning-Modul ermöglicht:
 -   Berechnung des individuellen Wiederaufnahmerisikos
 -   Visualisierung als Risikoscore
 
-Dies simuliert typische **Clinical Decision Support Systeme**.
+Simuliert ein typisches **Clinical Decision Support System**.
 
 ------------------------------------------------------------------------
 
