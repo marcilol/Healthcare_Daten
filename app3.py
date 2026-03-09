@@ -10,7 +10,15 @@ model = joblib.load('readmission_model.pkl')
 
 # Set up database connection (make sure the SQLite file is in the correct path)
 conn = sqlite3.connect('healthcare_data.db')
-data = pd.read_sql('SELECT * FROM encounters', conn)
+# data = pd.read_sql('SELECT * FROM encounters', conn)
+data = pd.read_sql("""
+SELECT 
+    e.*,
+    p.age
+FROM encounters e
+JOIN patients p
+ON e.patient_id = p.patient_id
+""", conn)
 
 # Page 1: Executive Overview
 st.title('Healthcare Analytics Dashboard')
