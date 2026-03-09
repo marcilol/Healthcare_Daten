@@ -3,119 +3,182 @@ import pandas as pd
 import sqlite3
 import joblib
 import matplotlib.pyplot as plt
-import seaborn as sns
 
-# Load the pre-trained model (make sure it's stored in the correct path)
-model = joblib.load('readmission_model.pkl')
+st.set_page_config(
+    page_title="Hospital Analytics Dashboard",
+    layout="wide"
+)
 
-# Set up database connection (make sure the SQLite file is in the correct path)
-conn = sqlite3.connect('healthcare_data.db')
+st.title("🏥 Healthcare Analytics Dashboard")
 
+# -------------------------
+# Load Data
+# -------------------------
+
+conn = sqlite3.connect("healthcare_data.db")
 
 data = pd.read_sql("""
 SELECT 
     e.*,
-    p.age,
-    l.test_result
+    p.age
 FROM encounters e
-JOIN patients p ON e.patient_id = p.patient_id
-LEFT JOIN lab_results l ON e.patient_id = l.patient_id
+JOIN patients p
+ON e.patient_id = p.patient_id
 """, conn)
 
-# Page 1: Executive Overview
-st.title('Healthcare Analytics Dashboard')
+model = joblib.load("readmission_model.pkl")
 
-# Total Patients and Visits
-total_patients = data['patient_id'].nunique()
-total_visits = data.shape[0]
-readmission_rate = data['readmission_within_30_days'].mean() * 100
-average_length_of_stay = data['length_of_stay'].mean()
+# -------------------------
+# Sidebar Filters
+# -------------------------
 
-st.header('Executive Overview')
-st.subheader(f'Total Patients: {total_patients}')
-st.subheader(f'Total Visits: {total_visits}')
-st.subheader(f'Readmission Rate: {readmission_rate:.2f}%')
-st.subheader(f'Average Length of Stay: {average_length_of_stay:.2f} days')
+st.sidebar.header("Filters")
 
-# Page 2: Chronic Disease Analysis
-st.header('Chronic Disease Analysis')
+hospital_filter = st.sidebar.multiselect(
+    "Select Hospital",
+    options=sorted(data["hospital_id"].unique()),
+    default=sorted(data["hospital_id"].unique())
+)
 
-# Diabetes patients
-diabetes = data[data['diagnosis'] == 'Diabetes']
-hypertension = data[data['diagnosis'] == 'Hypertension']
-heart_disease = data[data['diagnosis'] == 'Heart Disease']
+diagnosis_filter = st.sidebar.multiselect(
+    "Diagnosis",
+    options=sorted(data["diagnosis"].unique()),
+    default=sorted(data["diagnosis"].unique())
+)
 
-# Display chronic disease statistics
-st.write(f"Total Diabetes Patients: {diabetes.shape[0]}")
-st.write(f"Total Hypertension Patients: {hypertension.shape[0]}")
-st.write(f"Total Heart Disease Patients: {heart_disease.shape[0]}")
+filtered_data = data[
+    (data["hospital_id"].isin(hospital_filter)) &
+    (data["diagnosis"].isin(diagnosis_filter))
+]
 
-# Chronic Disease Distribution Pie Chart
-st.subheader('Chronic Disease Distribution')
-disease_counts = data['diagnosis'].value_counts()
-st.write(disease_counts)
+# -------------------------
+# KPI Metrics
+# -------------------------
 
-# Display Pie Chart
-fig, ax = plt.subplots()
-ax.pie(disease_counts, labels=disease_counts.index, autopct='%1.1f%%', startangle=90)
-ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
-st.pyplot(fig)
+total_patients = filtered_data["patient_id"].nunique()
+total_visits = filtered_data.shape[0]
+readmission_rate = filtered_data["readmission_within_30_days"].mean()*100
+avg_los = filtered_data["length_of_stay"].mean()
 
-# Page 3: Hospital Utilization
+col1, col2, col3, col4 = st.columns(4)
 
-st.header('Hospital Utilization')
+col1.metric("Total Patients", f"{total_patients:,}")
+col2.metric("Total Visits", f"{total_visits:,}")
+col3.metric("Readmission Rate", f"{readmission_rate:.2f}%")
+col4.metric("Avg Length of Stay", f"{avg_los:.2f} days")
 
-# Visits by Hospital
-hospital_visits = data['hospital_id'].value_counts()
-st.write('Hospital Visits Breakdown:')
-st.write(hospital_visits)
+st.divider()
 
-# Bar chart for hospital visits
-fig, ax = plt.subplots()
-ax.bar(hospital_visits.index, hospital_visits.values)
-ax.set_xlabel('Hospital ID')
-ax.set_ylabel('Number of Visits')
-ax.set_title('Hospital Visits Breakdown')
-st.pyplot(fig)
+# -------------------------
+# Tabs
+# -------------------------
 
-# Page 4: Predicting 30-day Readmission Risk
+tab1, tab2, tab3, tab4 = st.tabs([
+    "Executive Overview",
+    "Chronic Disease Analysis",
+    "Hospital Utilization",
+    "Readmission Risk Prediction"
+])
 
-st.header('Readmission Risk Prediction')
+# -------------------------
+# Executive Overview
+# -------------------------
 
-# User input to predict readmission risk
-patient_id_input = st.number_input('Enter Patient ID:', min_value=0, max_value=total_patients-1, step=1)
+with tab1:
 
-if patient_id_input is not None:
-    # Get data for the selected patient
-    patient_rows = data[data['patient_id'] == patient_id_input]
+    st.subheader("Visits by Diagnosis")
 
-if patient_rows.empty:
-    st.error("No encounters found for this patient.")
-else:
-    patient_data = patient_rows.iloc[0]
-    
-    # Prepare features for the prediction model (adjust based on your model's input features)
-    patient_features = {
-        'age': patient_data['age'],
-        'diagnosis': patient_data['diagnosis'],
-        'length_of_stay': patient_data['length_of_stay'],
-        'prior_visits': data[data['patient_id'] == patient_id_input].shape[0],
-        'max_lab_result': data[data['patient_id'] == patient_id_input]['test_result'].max()
-    }
-    
-    # Convert categorical 'diagnosis' feature into numerical encoding
-    diagnosis_mapping = {'Diabetes': 1, 'Hypertension': 2, 'Heart Disease': 3, 'Pneumonia': 4, 'Cancer': 5}
-    patient_features['diagnosis'] = diagnosis_mapping.get(patient_features['diagnosis'], 0)
+    diagnosis_counts = filtered_data["diagnosis"].value_counts()
 
-    # Convert features into a DataFrame for prediction
-    patient_df = pd.DataFrame([patient_features])
+    fig, ax = plt.subplots()
+    ax.bar(diagnosis_counts.index, diagnosis_counts.values)
+    ax.set_ylabel("Visits")
+    ax.set_xlabel("Diagnosis")
+    plt.xticks(rotation=45)
 
-    # Predict readmission risk
-    prediction = model.predict_proba(patient_df)[:, 1]  # Probability of readmission
-    st.write(f"Predicted Readmission Risk: {prediction[0]:.2f}")
+    st.pyplot(fig)
 
-    # Display result (threshold to classify high/low risk)
-    if prediction[0] > 0.5:
-        st.warning("This patient is at **high risk** for readmission.")
+# -------------------------
+# Chronic Disease Analysis
+# -------------------------
+
+with tab2:
+
+    st.subheader("Chronic Disease Distribution")
+
+    disease_counts = filtered_data["diagnosis"].value_counts()
+
+    fig, ax = plt.subplots()
+
+    ax.pie(
+        disease_counts,
+        labels=disease_counts.index,
+        autopct="%1.1f%%",
+        startangle=90
+    )
+
+    ax.axis("equal")
+
+    st.pyplot(fig)
+
+# -------------------------
+# Hospital Utilization
+# -------------------------
+
+with tab3:
+
+    st.subheader("Hospital Utilization")
+
+    hospital_visits = filtered_data["hospital_id"].value_counts()
+
+    fig, ax = plt.subplots()
+
+    ax.bar(hospital_visits.index, hospital_visits.values)
+
+    ax.set_xlabel("Hospital ID")
+    ax.set_ylabel("Visits")
+
+    st.pyplot(fig)
+
+# -------------------------
+# Readmission Prediction
+# -------------------------
+
+with tab4:
+
+    st.subheader("Predict 30-Day Readmission Risk")
+
+    patient_id_input = st.selectbox(
+        "Select Patient ID",
+        sorted(filtered_data["patient_id"].unique())
+    )
+
+    patient_rows = filtered_data[
+        filtered_data["patient_id"] == patient_id_input
+    ]
+
+    if patient_rows.empty:
+        st.warning("No encounter data available.")
     else:
-        st.success("This patient is at **low risk** for readmission.")
+
+        patient_data = patient_rows.iloc[0]
+
+        features = pd.DataFrame([{
+            "age": patient_data["age"],
+            "diagnosis": 1,
+            "length_of_stay": patient_data["length_of_stay"],
+            "prior_visits": patient_rows.shape[0],
+            "max_lab_result": 100
+        }])
+
+        prediction = model.predict_proba(features)[0][1]
+
+        st.metric(
+            "Predicted Readmission Risk",
+            f"{prediction:.2%}"
+        )
+
+        if prediction > 0.5:
+            st.error("High Risk Patient")
+        else:
+            st.success("Low Risk Patient")
