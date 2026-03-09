@@ -1,5 +1,8 @@
 # 🏥 Healthcare Analytics Dashboard
 
+https://healthcaredaten.streamlit.app/
+
+
 Ein **End-to-End Data Science und Data Engineering Projekt**, das ein
 Krankenhausnetzwerk simuliert und Analysen zu Patienten,
 Krankenhausaufenthalten und Wiederaufnahmerisiken bereitstellt.
