@@ -87,7 +87,12 @@ patient_id_input = st.number_input('Enter Patient ID:', min_value=0, max_value=t
 
 if patient_id_input is not None:
     # Get data for the selected patient
-    patient_data = data[data['patient_id'] == patient_id_input].iloc[0]
+    patient_rows = data[data['patient_id'] == patient_id_input]
+
+if patient_rows.empty:
+    st.error("No encounters found for this patient.")
+else:
+    patient_data = patient_rows.iloc[0]
     
     # Prepare features for the prediction model (adjust based on your model's input features)
     patient_features = {
