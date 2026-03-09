@@ -57,7 +57,7 @@ Health-Tech-Unternehmen verwendet werden könnten.
 
 ## 1️⃣ Synthetischer Healthcare Datensatz
 
-Das Projekt generiert realistisch strukturierte Gesundheitsdaten:
+In diesem Projekt habe ich folgende realistisch strukturierte Gesundheitsdaten generiert:
 
 -   5.000 Patienten
 -   20.000 Krankenhausaufenthalte
@@ -65,10 +65,6 @@ Das Projekt generiert realistisch strukturierte Gesundheitsdaten:
 -   Medikationsdaten
 -   Diagnosen
 -   Krankenhausstandorte
-
-Die Daten werden vollständig synthetisch generiert, um
-Datenschutzprobleme zu vermeiden, behalten jedoch eine realistische
-Struktur.
 
 ------------------------------------------------------------------------
 
@@ -89,7 +85,7 @@ Eine Python-basierte ETL-Pipeline verarbeitet die Daten:
 
 ## 3️⃣ Machine Learning Modell
 
-Das Projekt trainiert ein Modell zur Vorhersage von **30-Tage
+Trainiert wurde ein Modell zur Vorhersage von **30-Tage
 Krankenhaus-Wiederaufnahmen**.
 
 Verwendeter Algorithmus:
