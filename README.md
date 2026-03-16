@@ -44,6 +44,7 @@ Health-Tech-Unternehmen verwendet werden könnten.
 **Dashboard**
 
 -   Streamlit
+-   Matplotlib
 
 **Versionierung & Deployment**
 
